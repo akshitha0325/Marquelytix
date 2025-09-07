@@ -1,0 +1,247 @@
+PROJECT: Build a full-stack SaaS web app called “Marquelytix” for real-time customer sentiment monitoring for micro/small businesses. 
+Primary goal: multi-page website with a Brand24-style experience. 
+Flow: Public Landing Page → Login/Signup (no free-trial CTA) → Authenticated App (/app/*) with left sidebar navigation and multiple dashboards. 
+Place the company name “Marquelytix” in the TOP-RIGHT of the app header styled like a profile chip (brand name + user avatar/initial).
+
+========================================
+TECH STACK (Replit-friendly)
+========================================
+Frontend: React + Vite + TypeScript + React Router + TailwindCSS + Recharts + React-Query (TanStack Query) + Lucide icons + Leaflet (maps) + dayjs.
+Backend: Node.js + Express + TypeScript + JWT auth + CORS + zod validation.
+Storage: Start with in-memory JSON + simple JSON file persistence (/data/*.json). Add .env for tokens.
+Exports: jsPDF (PDF), SheetJS/xlsx (Excel), html-to-image (PNG infographic).
+
+Directory layout:
+- /client (React app)
+- /server (Express API)
+- /.env.example → HUGGINGFACE_API_TOKEN=..., JWT_SECRET=..., DEMO_MODE=true
+- /data/seed.json (seed comments, authors, countries, sources)
+
+Brand & theme:
+- Colors: Primary Deep #1B3C53, Accent Slate #456882, Soft Sand #D2C1B6, Off-White #F9F3EF
+- Typography: Inter/Roboto; rounded corners 12–16px; soft shadows; 200–300ms ease transitions
+- Accessible (WCAG AA), keyboard focus rings, aria-labels
+
+========================================
+ROUTING (Public & App)
+========================================
+Public routes:
+- “/” Landing (About, Mission, Vision, Goals, FAQs, Testimonials, Contact, Login/Signup CTA only — NO free-trial button)
+- “/login”, “/signup” (email/password)
+
+Authenticated routes (prefix “/app”):
+- “/app/mentions” (default after login)    ← matches Brand24 “Mentions”
+- “/app/summary”
+- “/app/ai-insights”
+- “/app/analysis”
+- “/app/ai-brand-assistant” (NEW badge)
+- “/app/ai-topic-analysis”
+- “/app/comparison”
+- “/app/sources”
+- “/app/influencers”
+Reports:
+- “/app/reports/email”
+- “/app/reports/pdf”
+- “/app/reports/excel”
+- “/app/reports/infographic”
+Advanced (BETA section):
+- “/app/geo-analysis”
+- “/app/influencer-analysis”
+- “/app/hot-hours”
+- “/app/emotion-analysis”
+Account:
+- “/app/settings” (profile, tokens, demo toggle)
+
+Redirect: after successful login → /app/mentions.
+
+========================================
+GLOBAL APP SHELL
+========================================
+Top Header:
+- Left: search input (placeholder: “Search mentions, authors & domains…”)
+- Center: time range selector (Last 24h / 7d / 30d / Custom) & group tabs (Days/Weeks/Months)
+- Right: company/profile chip: [Marquelytix] + user avatar + dropdown (Settings, Logout)
+
+Left Sidebar (sticky):
+- Mentions, Summary, AI Insights, Analysis
+- AI Brand Assistant (NEW pill)
+- AI Topic Analysis
+- Comparison
+- Sources
+- Influencers
+- REPORTS: Email, PDF, Excel, Infographic
+- LAB (BETA): Geo Analysis, Influencer Analysis, Hot Hours, Emotion Analysis
+
+Footer: version + links.
+
+========================================
+LANDING PAGE (Brand24-inspired, public)
+========================================
+Sections (top→bottom):
+1) Hero: H1 “Understand your customers in real time.” Subtext oriented to cafés/salons/local shops. Buttons: [Login] [Sign up].
+2) Mission, Vision, Goals (bullets: Trust, Prevent revenue loss, Boost repeat sales, Affordable pricing)
+3) About Us (story for small businesses)
+4) “How it works” (Connect/Enter review → AI analyzes → Alerts + Actions)
+5) Testimonials (3–4 cards; stock images unless admin uploads CEO/board photos)
+6) FAQs (setup, pricing later, privacy, integrations coming soon)
+7) Contact (non-functional form by default)
+8) Footer
+
+Use palette and smooth reveal animations.
+
+========================================
+DATA MODELS (shared via TypeScript types)
+========================================
+Comment {
+  id: string; source: "google"|"instagram"|"facebook"|"x"|"news"|"blog"|"video"|"podcast"|"tiktok"|"other"|"manual";
+  authorId: string; text: string; lang: string; country: string; createdAt: string; 
+  sentimentLabel: "POSITIVE"|"NEUTRAL"|"NEGATIVE"; sentimentScore: number; 
+  influence: number; // 0..10
+}
+Author { id: string; name: string; handle?: string; followers?: number; avatarUrl?: string; platform?: string; }
+Snapshot { ts: string; mentions: number; reach: number; avgScore: number; pos: number; neu: number; neg: number; }
+Suggestion { id: string; category: "POSITIVE"|"NEUTRAL"|"NEGATIVE"; title: string; body: string; }
+TopicBreakdown { label: string; count: number; score?: number; }
+GeoPoint { country: string; mentions: number; reach: number; interactions: number; }
+
+========================================
+AUTH (simple & secure)
+========================================
+- POST /auth/signup {email,password} → create user (bcrypt hash) in /data/users.json
+- POST /auth/login {email,password} → JWT (httpOnly cookie)
+- Middleware protect all /api/* except /auth/*
+- On first login, if HUGGINGFACE_API_TOKEN missing, show Setup Wizard modal to capture token & DEMO_MODE toggle (stored in /data/config.json)
+
+========================================
+BACKEND API (Express)
+========================================
+/api/analyze (POST)
+- Body: { text: string }
+- If DEMO_MODE=true: return mocked label/score via rules
+- Else call Hugging Face Inference API for model “siebert/sentiment-roberta-large-english”
+  Return: { sentimentLabel, sentimentScore }
+
+/api/comments (GET)
+- Query: source[], sentiment[], minInfluence, countriesExclude[], languagesExclude[], q, dateFrom, dateTo, order="recent|top"
+- Returns filtered Comment[]
+
+/api/comments (POST)
+- Body: { source, authorId?, text, lang?, country?, createdAt? }
+- Server calls /api/analyze, enriches with score/label, computes influence (0–10), persists, returns new Comment
+
+/api/snapshots (GET)
+- Query: range=1d|7d|30d&group=day|week|month
+- Returns Snapshot[] built from comments
+
+/api/suggestions (GET)
+- Query: category=POSITIVE|NEUTRAL|NEGATIVE → Suggestion[] (pre-seeded playbooks)
+
+/api/authors (GET) → Author[] (with influence ranking)
+/api/geo (GET) → GeoPoint[] (aggregated by country)
+/api/report/pdf (POST) → returns generated PDF buffer (summary, charts snapshots)
+/api/report/excel (POST) → returns xlsx (comments + summary sheets)
+/api/report/infographic (POST) → returns PNG from key dashboard section
+
+Errors: return {error,message}; client shows toast + “Use Demo Data” CTA.
+
+========================================
+SEED & DEMO MODE
+========================================
+- Put ~60 comments across sources (google/x/facebook/news/blog/video/podcast/tiktok/other/manual), realistic timestamps for last 30 days, mixed languages (en, ta, hi) & countries (IN primary + US/UK etc.), varied influence 0–10.
+- Provide 10 authors with followers.
+- Provide snapshots precomputed for speed; recompute on write.
+- DEMO controls: “Simulate New Comment” (modal with textarea + source + country + influence slider). Appends, re-queries charts, and shows alert if average sentiment < 0.40 or drop > 15% vs prev window.
+
+========================================
+UI DETAILS BY PAGE (match screenshots)
+========================================
+
+/app/mentions
+- Top: Tabs “Mentions & Reach” | “Sentiment”
+- Line chart (mentions & reach, dual-axis) with dots you can click to set date filter; group: Days/Weeks/Months
+- Right filter panel:
+  * Time range (Last 30 days default)
+  * “Summarize with AI” button → compute quick text summary from current filtered data (e.g., top sources, avg sentiment, key change)
+  * Sources checklist: Facebook, X (Twitter), Instagram, TikTok, Videos, Podcasts, News, Blogs, Other Socials, Web, Manual (with “Show all (count)” link)
+  * Sentiment checkboxes: Negative / Neutral / Positive
+  * Influence score slider 0–10
+  * Geolocation: Exclude countries (multi-select)
+  * Language: Exclude languages (multi-select)
+  * Author search (typeahead)
+- Feed (center column): cards with platform icon, author, timestamp, text, badges (sentiment + score), quick actions: Visit (if url), Tags, Add to PDF report, Mute site/author (affects filters)
+/app/summary
+- Panels: Most popular mentions, Latest mentions (tables)
+- KPI strip: Total mentions, Δ vs prev period, Pos/Neu/Neg counts
+- Social Media Reach line chart
+- “Top public profiles” and “Most influential sites” tables
+/app/ai-insights
+- Auto findings: spikes, top complaints, recurring praise; show bullet insights; “Generate action plan” → Suggestions list
+/app/analysis
+- Stack of charts: Pos/Neu/Neg distribution (donut); Sentiment over time (line); Word cloud (keywords from comments, simple TF-IDF); Source share (bar)
+/app/ai-brand-assistant (NEW)
+- Simple Q&A box (“Ask about your brand performance”) → template answers based on current filters (counts, top sources, change%) + canned tips
+/app/ai-topic-analysis
+- Topic breakdown chips with counts; topic timeline mini-charts
+/app/comparison
+- Compare two terms/competitors (inputs). Show side-by-side: mentions over time, avg sentiment, source mix, top countries
+/app/sources
+- Source list: for each platform → mentions, reach, avg sentiment; toggle include/exclude
+/app/influencers
+- Table: author, platform, followers, influence (0–10), mentions, avg sentiment; sort & filter
+/app/reports/*
+- Email: form (to, subject) + schedule (mock)
+- PDF: generate and download PDF from current filter state
+- Excel: generate xlsx with sheets (Summary, Comments, Authors)
+- Infographic: generate PNG of a composite hero section
+/app/geo-analysis (BETA)
+- World choropleth map (Leaflet + lightweight GeoJSON), shows Reach by country; top-10 countries table; tabs: Mentions / Reach / Interactions
+/app/influencer-analysis (BETA)
+- Charts: influence vs engagement; table of rising authors (Δ influence)
+/app/hot-hours (BETA)
+- Heatmap (day of week × hour) for mentions and sentiment; tooltips with counts
+/app/emotion-analysis (BETA)
+- Multi-series line “Emotions in time” with 6 lines (Admiration, Anger, Disgust, Fear, Joy, Sadness)
+- For demo, map sentiment→emotions (POSITIVE→Joy/Admiration, NEGATIVE→Anger/Sadness, NEUTRAL→none); make this swappable with a real emotion model later
+
+Header actions everywhere:
+- “Simulate New Comment” button
+- Export dropdown (PDF/Excel/PNG)
+- Time range + grouping controls persist via URL query params
+
+========================================
+COMPONENTS (reusable)
+========================================
+AppShell, SidebarNav (with badges NEW/BETA), HeaderBar (search, time range, export, Marquelytix chip), FilterPanel, LineChart, DualAxisLineChart, DonutChart, BarChart, Heatmap, WorldMap, KPIStat, AlertBanner, CommentCard, TableSortable, ModalNewComment, SuggestionsList, Toast.
+
+========================================
+SENTIMENT THRESHOLDS & ALERTS
+========================================
+- Gauge colors: Green > 0.60, Yellow 0.40–0.60, Red < 0.40
+- Alert conditions: avg < 0.40 OR last-hour drop > 15% vs previous hour → show sticky alert “⚠ Sentiment dropped by X%”
+- Store thresholds in /data/config.json; editable in /app/settings
+
+========================================
+HF INTEGRATION (server)
+========================================
+- Use fetch to call Hugging Face Inference API with Authorization: Bearer ${HUGGINGFACE_API_TOKEN}
+- Model: siebert/sentiment-roberta-large-english
+- Map outputs to {sentimentLabel, sentimentScore}
+- If token missing or error → fallback to DEMO_MODE and notify client
+
+========================================
+LANDING PAGE CONTENT (copy-ready)
+========================================
+- Mission, Vision, Goals, About, How it Works, Testimonials (use stock photos for generic workers/owners; if CEO/board photo: show placeholder + upload in /app/settings)
+- CTA buttons: Login, Sign up (NO free trial)
+
+========================================
+DONE CRITERIA
+========================================
+- Runs on Replit with one click (“Run” starts both client and server via concurrently)
+- Public landing → login/signup → redirect to /app/mentions
+- Left nav + all pages scaffolded with working filters, charts from seed data
+- DEMO MODE ON by default; “Simulate New Comment” updates charts < 2s
+- PDF/Excel/PNG exports work from current state
+- Company name “Marquelytix” is displayed TOP-RIGHT like a profile element
+
+If any required value is missing at build time, create a Setup Wizard modal on first login to collect: HUGGINGFACE_API_TOKEN, DEMO_MODE, business name/logo (optional). Use sensible defaults for a fully working demo.
