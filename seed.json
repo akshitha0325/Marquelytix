@@ -1,0 +1,241 @@
+{
+  "authors": [
+    {
+      "id": "author-1",
+      "name": "Sarah Johnson",
+      "handle": "sarahj_reviewer",
+      "followers": 1250,
+      "avatarUrl": null,
+      "platform": "google"
+    },
+    {
+      "id": "author-2", 
+      "name": "Mike Chen",
+      "handle": "mikec_foodie",
+      "followers": 890,
+      "avatarUrl": null,
+      "platform": "instagram"
+    },
+    {
+      "id": "author-3",
+      "name": "Emma Rodriguez",
+      "handle": "emma_eats",
+      "followers": 2100,
+      "avatarUrl": null,
+      "platform": "facebook"
+    },
+    {
+      "id": "author-4",
+      "name": "David Thompson",
+      "handle": "david_reviews",
+      "followers": 650,
+      "avatarUrl": null,
+      "platform": "x"
+    },
+    {
+      "id": "author-5",
+      "name": "Lisa Park",
+      "handle": "lisap_local",
+      "followers": 1800,
+      "avatarUrl": null,
+      "platform": "instagram"
+    }
+  ],
+  "comments": [
+    {
+      "id": "comment-1",
+      "userId": null,
+      "source": "google",
+      "authorId": "author-1",
+      "text": "Amazing coffee and the barista was so friendly! The new matcha latte is absolutely delicious. Will definitely be back!",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-12T14:30:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.89,
+      "influence": 7
+    },
+    {
+      "id": "comment-2",
+      "userId": null,
+      "source": "facebook",
+      "authorId": "author-3",
+      "text": "Waited 20 minutes for my order and they got it wrong. The staff seemed overwhelmed and the place was quite messy.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-12T10:15:00Z",
+      "sentimentLabel": "NEGATIVE",
+      "sentimentScore": 0.23,
+      "influence": 5
+    },
+    {
+      "id": "comment-3",
+      "userId": null,
+      "source": "instagram",
+      "authorId": "author-2",
+      "text": "Decent coffee, nothing extraordinary. The atmosphere is nice for working but could use better WiFi.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-12T08:45:00Z",
+      "sentimentLabel": "NEUTRAL",
+      "sentimentScore": 0.52,
+      "influence": 6
+    },
+    {
+      "id": "comment-4",
+      "userId": null,
+      "source": "google",
+      "authorId": "author-1",
+      "text": "Love this place! Great coffee, friendly staff, and perfect spot for meetings. The pastries are fresh and delicious.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-11T16:20:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.92,
+      "influence": 8
+    },
+    {
+      "id": "comment-5",
+      "userId": null,
+      "source": "x",
+      "authorId": "author-4",
+      "text": "Service has really improved lately. Quick service and great quality. The new seasonal drinks are a hit!",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-11T13:10:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.85,
+      "influence": 4
+    },
+    {
+      "id": "comment-6",
+      "userId": null,
+      "source": "instagram",
+      "authorId": "author-5",
+      "text": "The renovation looks amazing! Much more modern and comfortable. Coffee quality is consistently excellent.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-11T11:30:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.88,
+      "influence": 9
+    },
+    {
+      "id": "comment-7",
+      "userId": null,
+      "source": "google",
+      "authorId": "author-1",
+      "text": "Disappointed with my visit today. Coffee was lukewarm and the service was slow despite not being busy.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-10T15:45:00Z",
+      "sentimentLabel": "NEGATIVE",
+      "sentimentScore": 0.31,
+      "influence": 6
+    },
+    {
+      "id": "comment-8",
+      "userId": null,
+      "source": "facebook",
+      "authorId": "author-3",
+      "text": "Always a reliable choice for good coffee. Prices are reasonable and the location is convenient.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-10T12:15:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.76,
+      "influence": 5
+    },
+    {
+      "id": "comment-9",
+      "userId": null,
+      "source": "instagram",
+      "authorId": "author-2",
+      "text": "The new barista is incredibly skilled! Latte art is beautiful and taste is perfect. Highly recommend!",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-10T09:30:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.94,
+      "influence": 7
+    },
+    {
+      "id": "comment-10",
+      "userId": null,
+      "source": "manual",
+      "authorId": null,
+      "text": "Clean environment, good music, and excellent customer service. Perfect place to work remotely.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-09T14:00:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.82,
+      "influence": 3
+    },
+    {
+      "id": "comment-11",
+      "userId": null,
+      "source": "tiktok",
+      "authorId": "author-5",
+      "text": "This place has the best cold brew in the city! The vibe is perfect for studying too.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-09T11:20:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.87,
+      "influence": 8
+    },
+    {
+      "id": "comment-12",
+      "userId": null,
+      "source": "google",
+      "authorId": "author-4",
+      "text": "Overpriced for what you get. Coffee is average and seating is limited during peak hours.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-08T16:45:00Z",
+      "sentimentLabel": "NEGATIVE",
+      "sentimentScore": 0.28,
+      "influence": 4
+    },
+    {
+      "id": "comment-13",
+      "userId": null,
+      "source": "news",
+      "authorId": null,
+      "text": "Local coffee shop recognized for sustainability efforts and community involvement. Great addition to the neighborhood.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-08T10:00:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.79,
+      "influence": 9
+    },
+    {
+      "id": "comment-14",
+      "userId": null,
+      "source": "blog",
+      "authorId": null,
+      "text": "Hidden gem in downtown! Exceptional espresso and welcoming atmosphere. Staff knows regulars by name.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-07T13:15:00Z",
+      "sentimentLabel": "POSITIVE",
+      "sentimentScore": 0.91,
+      "influence": 6
+    },
+    {
+      "id": "comment-15",
+      "userId": null,
+      "source": "facebook",
+      "authorId": "author-3",
+      "text": "Menu could use more variety. Same options for months now. Coffee quality is good though.",
+      "lang": "en",
+      "country": "US",
+      "createdAt": "2024-08-07T09:30:00Z",
+      "sentimentLabel": "NEUTRAL",
+      "sentimentScore": 0.58,
+      "influence": 5
+    }
+  ]
+}
