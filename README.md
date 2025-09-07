@@ -1,1 +1,2 @@
 # Marquelytix
+Sentiment analysis
